@@ -128,3 +128,20 @@ func PathExists(path string) (bool, error) {
 	}
 	return false, err
 }
+
+func ListFiles(path string) []string {
+	res := []string{}
+
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, file := range files {
+		if !file.IsDir() {
+			res = append(res, file.Name())
+		}
+	}
+
+	return res
+}

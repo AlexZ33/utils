@@ -1,10 +1,48 @@
+/***
+* 工具类 - 文件读取、写入、解析、拼接、删除、拷贝、移动等
+**/
+
 package files
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"os"
 	"path"
 	"strings"
 )
+
+// LoadFile 读取文件内容
+func LoadFile(filename string) ([]byte, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	buf, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	return buf, nil
+}
+
+// LoadJsonToObject 读取json文件
+func LoadJsonToObject(filename string, obj interface{}) error {
+	buf, err := LoadFile(filename)
+
+	if buf == nil {
+		return err
+	}
+	if err != nil {
+		return err
+	}
+
+	e := json.Unmarshal(buf, &obj)
+	if e != nil {
+		return e
+	}
+	return nil
+}
 
 var stdImageExt = []string{"png", "jpg", "gif", "jpeg"}
 

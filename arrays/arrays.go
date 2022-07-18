@@ -47,3 +47,29 @@ func Compact(arr []interface{}) []interface{} {
 	}
 	return result
 }
+
+// Flatten 返回一个新的一维平面数组
+// Example:
+//	var arr1 = []interface{}{1, 2, 3, 4}       // [1, 2, 3, 4]
+//	var arr2 = []interface{}{5, 6, 7, arr1}    // [5, 6, 7, [1, 2, 3, 4]]
+//	result := arrays.Flatten(arr2)          // [5, 6, 7, 1, 2, 3, 4]
+func Flatten(arr []interface{}) []interface{} {
+	if arr == nil {
+		return arr
+	}
+
+	result := make([]interface{}, 0, len(arr))
+	for _, v := range arr {
+		switch v.(type) {
+		case []interface{}:
+			f1 := Flatten(v.([]interface{}))
+			for _, v1 := range f1 {
+				result = append(result, v1)
+			}
+		default:
+			result = append(result, v)
+
+		}
+	}
+	return result
+}

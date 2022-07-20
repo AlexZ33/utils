@@ -13,6 +13,17 @@ func GetCurrentTime() string {
 	return tm.Format(time.RFC3339)
 }
 
+func GetTimeFromTimeStamp(timestamp int64) string {
+	t := time.Unix(timestamp, 0)
+	return t.Format(time.RFC3339)
+}
+
+func Time2String(t time.Time) string {
+	// https://stackoverflow.com/questions/55409774/the-result-of-time-formatting-of-rfc3339-in-go-on-linux-and-macos-are-different
+	lo, _ := time.LoadLocation("Local")
+	return t.In(lo).Format(time.RFC3339)
+}
+
 const TimeFormat = "2006-01-02 15:04:05"
 
 // MarshalJSON time序列化为JSON

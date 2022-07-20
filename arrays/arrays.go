@@ -4,6 +4,12 @@
 
 package arrays
 
+import (
+	"errors"
+	"reflect"
+	"unsafe"
+)
+
 // RemoveDuplicate 删除[]string 中的重复元素
 func RemoveDuplicate(slice []string) []string {
 	m := make(map[string]int)
@@ -94,4 +100,113 @@ func Map(arr []interface{}, f MapFunc) []interface{} {
 		result = append(result, f(v))
 	}
 	return result
+}
+
+// Contains 判断某个元素是否在slice, array, map中
+func Contains(search interface{}, target interface{}) (bool, error) {
+	targetValue := reflect.ValueOf(target)
+	switch reflect.TypeOf(target).Kind() {
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < targetValue.Len(); i++ {
+			if targetValue.Index(i).Interface() == search {
+				return true, nil
+			}
+		}
+	case reflect.Map:
+		if targetValue.MapIndex(reflect.ValueOf(search)).IsValid() {
+			return true, nil
+		}
+	}
+
+	return false, errors.New("not in array")
+}
+
+// Equal 通过reflect.DeepEqual比较两个slice、struct、map是否相等
+// 来自reflect.DeepEqual函数能够对两个值进行深度相等判断
+// 注意： 它会对一个nil值map和非nil值但是空的map视作不相等
+// 同样nil值slice和非nil值但是空的slice视作不相等
+// 自己实现一个equal函数以解决上面问题
+// Reference: 《GO语言圣经: 深度相等判断rrors.New("Not in array")》
+// https://github.com/adonovan/gopl.io/blob/master/ch13/equal/equal.go
+// Equal provides a deep equivalence relation for arbitrary values
+
+type comparison struct {
+	a, b unsafe.Pointer
+	t    reflect.Type
+}
+
+func equal(a, b reflect.Value, seen map[comparison]bool) bool {
+	if !a.IsValid() || !b.IsValid() {
+		return a.IsValid() == b.IsValid()
+	}
+	if a.Type() != b.Type() {
+		return false
+	}
+	if a.CanAddr() && b.CanAddr() {
+		aptr := unsafe.Pointer(a.UnsafeAddr())
+		bptr := unsafe.Pointer(b.UnsafeAddr())
+		if aptr == bptr {
+			return true // identical references
+		}
+		c := comparison{aptr, bptr, a.Type()}
+		if seen[c] {
+			return true // already seen
+		}
+		seen[c] = true
+	}
+
+	switch a.Kind() {
+	case reflect.Bool:
+		return a.Bool() == b.Bool()
+	case reflect.String:
+		return a.String() == b.String()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return a.Int() == b.Int()
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr:
+		return a.Uint() == b.Uint()
+	case reflect.Float32, reflect.Float64:
+		return a.Float() == b.Float()
+	case reflect.Complex64, reflect.Complex128:
+		return a.Complex() == b.Complex()
+	case reflect.Chan, reflect.UnsafePointer, reflect.Func:
+		return a.Pointer() == b.Pointer()
+	case reflect.Ptr, reflect.Interface:
+		return equal(a.Elem(), b.Elem(), seen)
+	case reflect.Array, reflect.Slice:
+		if a.Len() != b.Len() {
+			return false
+		}
+		for i := 0; i < a.Len(); i++ {
+			if !equal(a.Index(i), b.Index(i), seen) {
+				return false
+			}
+		}
+		return true
+	case reflect.Struct:
+		for i, n := 0, a.NumField(); i < n; i++ {
+			if !equal(a.Field(i), b.Field(i), seen) {
+				return false
+			}
+		}
+		return true
+	case reflect.Map:
+		if a.Len() != b.Len() {
+			return false
+		}
+		for _, k := range a.MapKeys() {
+			if !equal(a.MapIndex(k), b.MapIndex(k), seen) {
+				return false
+			}
+		}
+		return true
+	}
+	panic("unreachable")
+}
+
+// Equal reports whether a and b are deeply equal.
+// Map keys are always compared with ==, not deeply.
+// (This matters for keys containing pointers or interfaces)
+func Equal(a, b interface{}) bool {
+	seen := make(map[comparison]bool)
+	return equal(reflect.ValueOf(a), reflect.ValueOf(b), seen)
 }

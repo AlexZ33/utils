@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -21,6 +22,37 @@ func New(message string, a ...interface{}) *SimpError {
 	return &SimpError{fmt.Sprintf(message, a...)}
 }
 
+// CodeError WebCode Error
+type CodeError struct {
+	Code    int
+	Message string
+	Data    interface{}
+}
+
+func NewError(code int, text string) *CodeError {
+	return &CodeError{code, text, nil}
+}
+
+func NewErrorMsg(text string) *CodeError {
+	return &CodeError{0, text, nil}
+}
+
+func NewErrorData(code int, text string, data interface{}) *CodeError {
+	return &CodeError{code, text, data}
+}
+
+func FromError(err error) *CodeError {
+	if err == nil {
+		return nil
+	}
+	return &CodeError{0, err.Error(), nil}
+}
+
+func (e *CodeError) Error() string {
+	return strconv.Itoa(e.Code) + ":" + e.Message
+}
+
+// WrapError ErrorStack 获取错误堆栈
 func WrapError(err error) error {
 	if err != nil {
 		_, file, line, _ := runtime.Caller(1)

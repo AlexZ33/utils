@@ -131,6 +131,8 @@ type Request struct {
 
 }
 
+/**************************************ReqBody***************************************************/
+
 // ReqBody 请求体
 type ReqBody struct {
 	inter       interface{}
@@ -197,6 +199,7 @@ func (body *ReqBody) GetBodyInter() interface{} {
 	return body.inter
 }
 
+//AddParam 为body添加参数, 仅form-data支持使用
 func (body *ReqBody) AddParam(key string, value interface{}) error {
 	if body.contentType != ContentTypeFormData {
 		return errors.New("body不是from-data, 不支持AddParam")
@@ -206,4 +209,64 @@ func (body *ReqBody) AddParam(key string, value interface{}) error {
 	if bodyParams == nil {
 		bodyParams = make(url.Values)
 	}
+	switch value.(type) {
+	case string:
+		v := value.(string)
+		if len(v) > 0 {
+			bodyParams.Add(key, v)
+		}
+	case []string:
+		vs := value.([]string)
+		for _, v := range vs {
+			if len(v) > 0 {
+				bodyParams.Add(key, v)
+			}
+		}
+	default:
+		panic("param不支持的参数类型")
+	}
+	body.inter = bodyParams
+	return nil
 }
+
+// GetContentType 获取contentType
+func (body *ReqBody) GetContentType() string {
+	if body == nil {
+		return ""
+	}
+	return body.contentType
+}
+
+/**************************************ReqInput***************************************************/
+
+// ReqInput 请求输入
+type ReqInput struct {
+	Header http.Header // 请求头
+	Params url.Values  // 请求参数
+	Body   *ReqBody    // 请求体
+}
+
+func(rInput *ReqInput) AddReqInputParam (key string, value interface) {
+	if rInput.Params == nil {
+		rInput.Params = make(url.Values)
+	}
+	switch value.(type) {
+	case string:
+		v := value.(string)
+		if len(v) > 0 {
+			rInput.Params.Add(key, v)
+		}
+	case []string:
+		vs := value.([]string)
+		for _, v := range vs {
+			if len(v) > 0 {
+				rInput.Params.Add(key, v)
+			}
+		}
+	default:
+		panic("param不支持的参数类型")
+	}
+}
+
+
+

@@ -1,6 +1,9 @@
 package string
 
-import "unicode"
+import (
+	"strconv"
+	"unicode"
+)
 
 // IsPalindrome 判断字符串是否是回文(reports whether s reads the same forward and backward)
 func IsPalindrome(s string) bool {
@@ -79,4 +82,37 @@ func LongestPalindromes(s string) string {
 	}
 	return s[pl : pr+1]
 
+}
+
+func ToInt64(str string) int64 {
+	return ToInt64ByDefault(str, 0)
+}
+
+// ToInt64ByDefault 将字符串转换为int64
+// str: 字符串
+// def: 转化失败时候使用默认值
+func ToInt64ByDefault(str string, def int64) int64 {
+	val, err := strconv.ParseInt(str, 10, 64)
+	if err != nil {
+		val = def
+	}
+	return val
+}
+
+// ToInt str to int, if error return 0
+// str: 字符串
+func ToInt(str string) int {
+	return ToIntByDefault(str, 0)
+}
+
+// ToIntByDefault 将字符串转换为int
+// str: 字符串
+// def: 转化失败时候使用默认值
+func ToIntByDefault(str string, def int) int {
+	// Atoi is equivalent to ParseInt(s, 10, 0), converted to type int.
+	val, err := strconv.Atoi(str)
+	if err != nil {
+		val = def
+	}
+	return val
 }

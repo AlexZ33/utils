@@ -45,7 +45,7 @@ func (t Time) RawValue() interface{} {
 	return str
 }
 
-//
+//ChangeStrTimeToUTC 把字符串时间转换为UTC时间
 func ChangeStrTimeToUTC(strTime string) time.Time {
 	if strTime == "" {
 		return time.Unix(0, 0)

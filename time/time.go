@@ -1,6 +1,9 @@
 package time
 
-import "time"
+import (
+	"github.com/AlexZ33/utils/errors"
+	"time"
+)
 
 type Time struct {
 	time.Time
@@ -40,4 +43,20 @@ func (t Time) RawValue() interface{} {
 		return nil
 	}
 	return str
+}
+
+//
+func ChangeStrTimeToUTC(strTime string) time.Time {
+	if strTime == "" {
+		return time.Unix(0, 0)
+	}
+	// https://gosamples.dev/date-time-format-cheatsheet/
+	// 软件包time: const TimeFormat string = "2006-01-02 15:04:05"
+	timeResult, err := time.ParseInLocation(TimeFormat, strTime, time.Local)
+	if err != nil {
+		errors.New("ChangeStrTimeToUTC error: %v", err)
+		return time.Now()
+	}
+	return timeResult
+
 }

@@ -18,8 +18,8 @@ func (e *SimpError) Error() string {
 }
 
 // New 新建SimpleError
-func New(message string, a ...interface{}) *SimpError {
-	return &SimpError{fmt.Sprintf(message, a...)}
+func New(a ...interface{}) *SimpError {
+	return &SimpError{fmt.Sprintf("message", a...)}
 }
 
 // CodeError WebCode Error

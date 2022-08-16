@@ -54,7 +54,7 @@ func ChangeStrTimeToUTC(strTime string) time.Time {
 	// 软件包time: const TimeFormat string = "2006-01-02 15:04:05"
 	timeResult, err := time.ParseInLocation(TimeFormat, strTime, time.Local)
 	if err != nil {
-		errors.New("ChangeStrTimeToUTC error: %v", err)
+		errors.New(err)
 		return time.Now()
 	}
 	return timeResult

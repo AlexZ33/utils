@@ -2,6 +2,8 @@ package json
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/AlexZ33/utils/errors"
 )
 
 func Parse(str string, t interface{}) error {
@@ -22,8 +24,8 @@ func ToStr(t interface{}) (string, error) {
 func ToJsonStr(t interface{}) string {
 	str, err := ToStr(t)
 	if err != nil {
-		logrus.Error(err)
-		return ""
+		errors.New(err)
+		return fmt.Sprintln("json.ToJsonStr error:", err.Error())
 	}
 	return str
 }

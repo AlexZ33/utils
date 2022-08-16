@@ -10,6 +10,18 @@ import (
 	"unsafe"
 )
 
+// CopyShallowMap makes a shallow copy of a map
+func CopyShallowMap(m map[string]string) map[string]string {
+	if m == nil {
+		return nil
+	}
+	copy := make(map[string]string, len(m))
+	for key, value := range m {
+		copy[key] = value
+	}
+	return copy
+}
+
 // RemoveDuplicate 删除[]string 中的重复元素
 func RemoveDuplicate(slice []string) []string {
 	m := make(map[string]int)

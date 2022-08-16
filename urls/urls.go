@@ -46,3 +46,16 @@ func (builder *UrlBuilder) Build() *url.URL {
 func (builder *UrlBuilder) BuildString() string {
 	return builder.Build().String()
 }
+
+// UrlAddParams 链接添加参数
+func UrlAddParams(rawUrl string, params url.Values) (string, error) {
+	if params == nil {
+		return rawUrl, nil
+	}
+	if URL, err := url.Parse(rawUrl); err != nil {
+		return "", err
+	} else {
+		URL.RawQuery = params.Encode()
+		return URL.String(), nil
+	}
+}

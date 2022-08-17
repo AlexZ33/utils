@@ -252,5 +252,3 @@ func ToCamelLower(str string) string {
 func ToCamelUpper(str string) string {
 	return strings.ToUpper(strings.Replace(str, "_", " ", -1))
 }
-
-//

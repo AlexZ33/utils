@@ -1,5 +1,7 @@
 /**
-* 工具类 - array,slice, map 的工具方法
+* @Description 工具类 - array,slice, map 的工具方法
+* @Author: AlexZ33
+* @Date: 2022-08-01 23:00:00
 **/
 
 package arrays
@@ -8,6 +10,7 @@ import (
 	"errors"
 	"reflect"
 	"sort"
+	"strconv"
 	"unsafe"
 )
 
@@ -252,11 +255,57 @@ func StringArrayEqual(arr1, arr2 []int) bool {
  * @param {[]string} strArray
  * @return {bool}
  */
-func InstringArray(target string, strArray []string) bool {
+func InStringArray(target string, strArray []string) bool {
 	sort.Strings(strArray)
 	index := sort.SearchStrings(strArray, target)
 	if index < len(strArray) && strArray[index] == target {
 		return true
 	}
 	return false
+}
+
+/**
+ * @name: InInt64Array
+ * @descripttion: 是否在Int64列表中
+ * @param {string} target
+ * @param {[]string} strArray
+ * @return {bool}
+ */
+func InInt64Array(target int64, int64Array []int64) bool {
+	targetStr := strconv.FormatInt(target, 10)
+	var strArray []string
+	for _, s := range int64Array {
+		strArray = append(strArray, strconv.FormatInt(s, 10))
+	}
+	return InStringArray(targetStr, strArray)
+}
+
+/**
+ * @name: InIntArray
+ * @descripttion: 是否在Int列表中
+ * @param {string} target
+ * @param {[]string} strArray
+ * @return {bool}
+ */
+func InIntArray(target int, intArray []int) bool {
+	sort.Ints(intArray)
+	index := sort.SearchInts(intArray, target)
+	if index < len(intArray) && intArray[index] == target {
+		return true
+	}
+	return false
+}
+
+//ToSlice 转换为数组
+func ToSlice(arr interface{}) []interface{} {
+	v := reflect.ValueOf(arr)
+	if v.Kind() != reflect.Slice {
+		panic("toslice() given a non-slice type")
+	}
+	l := v.Len()
+	ret := make([]interface{}, l)
+	for i := 0; i < l; i++ {
+		ret[i] = v.Index(i).Interface()
+	}
+	return ret
 }

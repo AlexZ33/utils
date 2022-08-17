@@ -7,6 +7,7 @@ package arrays
 import (
 	"errors"
 	"reflect"
+	"sort"
 	"unsafe"
 )
 
@@ -221,4 +222,41 @@ func equal(a, b reflect.Value, seen map[comparison]bool) bool {
 func Equal(a, b interface{}) bool {
 	seen := make(map[comparison]bool)
 	return equal(reflect.ValueOf(a), reflect.ValueOf(b), seen)
+}
+
+/**
+ * @name: IntArrayEqual
+ * @descripttion: 判断IntArray是否相等
+ * @param {[]int} arr1
+ * @param {[]int} arr2
+ * @return {bool}
+ */
+func StringArrayEqual(arr1, arr2 []int) bool {
+	if len(arr1) != len(arr2) {
+		return false
+	}
+	sort.Ints(arr1)
+	sort.Ints(arr2)
+	for i, arr := range arr1 {
+		if arr != arr2[i] {
+			return false
+		}
+	}
+	return true
+}
+
+/**
+ * @name: InStringArray
+ * @descripttion: 是否在字符串列表中
+ * @param {string} target
+ * @param {[]string} strArray
+ * @return {bool}
+ */
+func InstringArray(target string, strArray []string) bool {
+	sort.Strings(strArray)
+	index := sort.SearchStrings(strArray, target)
+	if index < len(strArray) && strArray[index] == target {
+		return true
+	}
+	return false
 }

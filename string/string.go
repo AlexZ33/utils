@@ -1,6 +1,7 @@
 package string
 
 import (
+	"bytes"
 	"strconv"
 	"strings"
 	"unicode"
@@ -251,4 +252,19 @@ func ToCamelLower(str string) string {
 // ToCamelUpper 下划线转驼峰，首字母大写
 func ToCamelUpper(str string) string {
 	return strings.ToUpper(strings.Replace(str, "_", " ", -1))
+}
+
+// StringJoin 字符串拼接
+func StringsJoin(strs ...string) string {
+	var str string
+	var b bytes.Buffer
+	strsLen := len(strs)
+	if strsLen == 0 {
+		return str
+	}
+	for i := 0; i < strsLen; i++ {
+		b.WriteString(strs[i])
+	}
+	str = b.String()
+	return str
 }

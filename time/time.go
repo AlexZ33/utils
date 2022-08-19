@@ -3,13 +3,60 @@ package time
 import (
 	"github.com/AlexZ33/utils/errors"
 	"log"
-	"math"
+	"strconv"
 	"strings"
 	"time"
 )
 
 type Time struct {
 	time.Time
+}
+
+// NowUnix 秒时间戳
+func NowUnix() int64 {
+	return time.Now().Unix()
+}
+
+// FromUnix 秒时间戳转时间
+func FromUnix(unix int64) time.Time {
+	return time.Unix(unix, 0)
+}
+
+// NowTimestamp 当前毫秒时间戳
+func NowTimestamp() int64 {
+	return Timestamp(time.Now())
+}
+
+// Timestamp 毫秒时间戳
+func Timestamp(t time.Time) int64 {
+	return t.UnixNano() / 1e6
+}
+
+// FromTimestamp 毫秒时间戳转时间
+func FromTimestamp(timestamp int64) time.Time {
+	return time.Unix(0, timestamp*int64(time.Millisecond))
+}
+
+// Format 时间格式化
+func Format(time time.Time, layout string) string {
+	return time.Format(layout)
+}
+
+// Parse 字符串时间转时间类型
+func Parse(timeStr, layout string) (time.Time, error) {
+	return time.Parse(layout, timeStr)
+}
+
+// GetDay return yyyyMMdd
+func GetDay(time time.Time) int {
+	ret, _ := strconv.Atoi(time.Format("20060102"))
+	return ret
+}
+
+// WithTimeAsStartOfDay
+// 返回指定时间当天的开始时间
+func WithTimeAsStartOfDay(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 }
 
 // GetCurrentTime 返回格式化的当前时间
@@ -62,13 +109,6 @@ func ChangeStrTimeToUTC(strTime string) time.Time {
 	}
 	return timeResult
 
-}
-
-// Timestamp 时间戳
-func Timestamp(milliseconds float64) time.Time {
-	seconds := math.Floor(milliseconds / 1000)
-	nanoseconds := (milliseconds - seconds*1000) * 1000000
-	return time.Unix(int64(seconds), int64(nanoseconds))
 }
 
 // ParseTimestamp 解析时间戳

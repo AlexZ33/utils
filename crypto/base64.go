@@ -9,3 +9,7 @@ func Base64Encode(data []byte) string {
 func Base64Decode(data string) ([]byte, string) {
 	return base64.StdEncoding.DecodeString(data)
 }
+
+func EncryptAesBase64(d string) (string, error) {
+
+}

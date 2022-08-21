@@ -6,6 +6,7 @@ package files
 
 import (
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
@@ -118,6 +119,7 @@ func AppendLine(path string, content string) error {
 	return err
 }
 
+// PathExists check if the directory or file exits
 func PathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -144,4 +146,69 @@ func ListFiles(path string) []string {
 	}
 
 	return res
+}
+
+// CopyDir copy directory from src to dst
+func CopyDir(src string, dst string) error {
+	var (
+		err     error
+		dir     []os.FileInfo
+		srcInfo os.FileInfo
+	)
+	if srcInfo, err = os.Stat(src); err != nil {
+		return err
+	}
+	if err = os.MkdirAll(dst, srcInfo.Mode()); err != nil {
+		return err
+	}
+	if dir, err = ioutil.ReadDir(src); err != nil {
+		return err
+	}
+	for _, fd := range dir {
+		srcPath := path.Join(src, fd.Name())
+		dstPath := path.Join(dst, fd.Name())
+
+		if fd.IsDir() {
+			err = CopyDir(srcPath, dstPath)
+			if err != nil {
+				return err
+			}
+		} else {
+			err = CopyFile(srcPath, dstPath)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func CopyFile(src, dist string) error {
+	var (
+		err     error
+		srcFile *os.File
+		dstFile *os.File
+		srcInfo os.FileInfo
+	)
+
+	if srcInfo, err = os.Open(src); err != nil {
+		return err
+	}
+	defer srcFile.Close()
+
+	if dstFile, err = os.Create(dist); err != nil {
+		return err
+	}
+
+	defer dstFile.Close()
+
+	if _, err = io.Copy(dstFile, srcFile); err != nil {
+		return err
+	}
+
+	if srcInfo, err = os.Stat(src); err != nil {
+		return err
+	}
+
+	return os.Chmod(dist, srcInfo.Mode())
 }

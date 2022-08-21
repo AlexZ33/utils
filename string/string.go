@@ -2,10 +2,25 @@ package string
 
 import (
 	"bytes"
+	"golang.org/x/crypto/bcrypt"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 	"unicode"
 )
+
+//GetRandomStr 生成随机字符串
+func GetRandomStr(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz_"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
+}
 
 // IsPalindrome 判断字符串是否是回文(reports whether s reads the same forward and backward)
 func IsPalindrome(s string) bool {
@@ -267,4 +282,16 @@ func StringsJoin(strs ...string) string {
 	}
 	str = b.String()
 	return str
+}
+
+// EncodePassword
+func EncodePassword(rawPassword string) string {
+	hash, _ := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
+	return string(hash)
+}
+
+// ValidatePassword
+func ValidatePassword(encodePassword string, inputPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(encodePassword), []byte(inputPassword))
+	return err == nil
 }

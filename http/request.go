@@ -270,3 +270,8 @@ func(rInput *ReqInput) AddReqInputParam (key string, value interface) {
 
 
 
+/**************************************************/
+
+func GetUserAgent(r *http.Request) string {
+	return r.Header.Get("User-Agent")
+}

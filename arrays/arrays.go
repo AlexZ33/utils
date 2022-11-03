@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"unsafe"
 )
@@ -372,4 +373,21 @@ func JoinInts(list []int64) string {
 	buf.Reset()
 	bufferPool.Put(buf)
 	return s
+}
+
+// SpliteInts split string into int64 slice.
+func SpliteInts(s string) ([]int64, error) {
+	if s == "" {
+		return nil, nil
+	}
+	sArr := strings.Split(s, ",")
+	res := make([]int64, 0, len(sArr))
+	for _, sc := range sArr {
+		i, err := strconv.ParseInt(sc, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		res = append(res, i)
+	}
+	return res, nil
 }

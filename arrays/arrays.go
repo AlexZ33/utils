@@ -7,10 +7,12 @@
 package arrays
 
 import (
+	"bytes"
 	"errors"
 	"reflect"
 	"sort"
 	"strconv"
+	"sync"
 	"unsafe"
 )
 
@@ -338,4 +340,36 @@ func Difference(a, b []string) (diff []string) {
 	}
 
 	return
+}
+
+var (
+	bufferPool = sync.Pool{
+		New: func() interface{} {
+			return bytes.NewBuffer([]byte{})
+		},
+	}
+)
+
+// JoinInts format int64 to slice like: n1, n2, n3
+func JoinInts(list []int64) string {
+	if len(list) == 0 {
+		return ""
+	}
+
+	if len(list) == 1 {
+		return strconv.FormatInt(list[0], 10)
+	}
+
+	buf := bufferPool.Get().(*bytes.Buffer)
+	for _, i := range list {
+		buf.WriteString(strconv.FormatInt(i, 10))
+		buf.WriteByte(',')
+	}
+	if buf.Len() > 0 {
+		buf.Truncate(buf.Len() - 1)
+	}
+	s := buf.String()
+	buf.Reset()
+	bufferPool.Put(buf)
+	return s
 }

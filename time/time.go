@@ -12,6 +12,22 @@ type Time struct {
 	time.Time
 }
 
+//timestamp be used to MySql timestamp converting.
+type timestamp int64
+
+// Scan scan time.
+func (ts *timestamp) Scan(src interface{}) (err error) {
+	switch sc := src.(type) {
+	case time.Time:
+		*ts = timestamp(sc.Unix())
+	case string:
+		var i int64
+		i, err = strconv.ParseInt(sc, 10, 64)
+		*ts = timestamp(i)
+	}
+	return
+}
+
 // NowUnix 秒时间戳
 func NowUnix() int64 {
 	return time.Now().Unix()

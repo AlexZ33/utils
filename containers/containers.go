@@ -17,5 +17,5 @@ func GetSortedValues(container Container, comparator algorithm.Comparator) []int
 		return values
 	}
 	algorithm.Sort(values, comparator)
-
+	return values
 }

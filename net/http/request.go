@@ -246,7 +246,7 @@ type ReqInput struct {
 	Body   *ReqBody    // 请求体
 }
 
-func(rInput *ReqInput) AddReqInputParam (key string, value interface) {
+func (rInput *ReqInput) AddReqInputParam(key string, value interface{}) {
 	if rInput.Params == nil {
 		rInput.Params = make(url.Values)
 	}
@@ -267,8 +267,6 @@ func(rInput *ReqInput) AddReqInputParam (key string, value interface) {
 		panic("param不支持的参数类型")
 	}
 }
-
-
 
 /**************************************************/
 

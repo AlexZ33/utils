@@ -6,6 +6,7 @@ package files
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"io/ioutil"
 	"os"
@@ -213,11 +214,6 @@ func CopyFile(src, dist string) error {
 	return os.Chmod(dist, srcInfo.Mode())
 }
 
-import (
-"errors"
-"os"
-)
-
 // ErrInvalidFsize invalid file size.
 var ErrInvalidFsize = errors.New("fsize can`t be zero or negative")
 
@@ -267,4 +263,3 @@ func openFile(fName string, fsize int64) (*os.File, error) {
 	}
 	return fd, nil
 }
-

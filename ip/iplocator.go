@@ -15,6 +15,8 @@ var (
 	searcher *xdb.Searcher
 )
 
+// InitIpLocator 使用时，需要加载xdb文件
+// github.com/lionsoul2014/ip2region/data/ip2region.xdb
 func InitIpLocator(dbPath string) {
 	once.Do(func() {
 		if str.IsBlank(dbPath) {

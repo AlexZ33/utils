@@ -101,11 +101,11 @@ func Time2String(t time.Time) string {
 const TimeFormat = "2006-01-02 15:04:05"
 
 // MarshalJSON time序列化为JSON
-func (t Time) MarshalJSON() ([]byte, error) {
-	if t.IsZero() {
-		return []byte(""), nil
-	}
-}
+//func (t Time) MarshalJSON() ([]byte, error) {
+//	if t.IsZero() {
+//		return []byte(""), nil
+//	}
+//}
 
 // RawValue 写入数据库
 func (t Time) RawValue() interface{} {

@@ -139,6 +139,32 @@ func Contains(search interface{}, target interface{}) bool {
 	return false
 }
 
+// ContainsIgnoreCase check if a string (search) is present in a slice of strings (target) regardless of the case.
+//words := []string{"Apple", "Banana", "Cherry", "Date", "Fig", "Grape"}
+//
+//	fmt.Println(ContainsIgnoreCase("apple", words)) // true
+//	fmt.Println(ContainsIgnoreCase("BANANA", words)) // true
+//	fmt.Println(ContainsIgnoreCase("Cherry", words)) // true
+//	fmt.Println(ContainsIgnoreCase("date", words)) // true
+//	fmt.Println(ContainsIgnoreCase("fig", words)) // true
+//	fmt.Println(ContainsIgnoreCase("grape", words)) // true
+//	fmt.Println(ContainsIgnoreCase("kiwi", words)) // false
+func ContainsIgnoreCase(search string, target []string) bool {
+	if len(search) == 0 {
+		return false
+	}
+	if len(target) == 0 {
+		return false
+	}
+	search = strings.ToLower(search)
+	for i := 0; i < len(target); i++ {
+		if strings.ToLower(target[i]) == search {
+			return true
+		}
+	}
+	return false
+}
+
 // Equal 通过reflect.DeepEqual比较两个slice、struct、map是否相等
 // 来自reflect.DeepEqual函数能够对两个值进行深度相等判断
 // 注意： 它会对一个nil值map和非nil值但是空的map视作不相等

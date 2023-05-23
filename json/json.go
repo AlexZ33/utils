@@ -35,7 +35,7 @@ type JsonMap map[string]string
 
 // FastJsonMap 快速解析单层jsonmap, eg: {"a": "1", "b": "2"}
 func FastJsonMap(data string) (JsonMap, error) {
-	if data == "" || !strings.HasPrefix(data, "{") || !string.HasSuffix(data, "}") {
+	if data == "" || !strings.HasPrefix(data, "{") || !strings.HasSuffix(data, "}") {
 		return nil, errors.New("data is not jsonmap.[" + data + "]")
 	}
 	data = strings.TrimLeft(data, "{")

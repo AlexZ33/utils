@@ -3,6 +3,7 @@ package files
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"github.com/disintegration/imaging"
 	"image"
 	"io"
@@ -27,6 +28,8 @@ var documentExtMap = map[string][]string{
 	"txt":   {".txt"},
 	"other": {".chm"},
 }
+
+var documentExt = make(map[string]struct{})
 
 func init() {
 	for _, exts := range documentExtMap {

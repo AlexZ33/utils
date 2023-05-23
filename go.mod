@@ -3,6 +3,7 @@ module github.com/AlexZ33/utils
 go 1.18
 
 require (
+	github.com/disintegration/imaging v1.6.2
 	github.com/google/go-cmp v0.5.8
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20230415042440-a5e3d8259ae0
 	github.com/sirupsen/logrus v1.9.0
@@ -15,6 +16,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

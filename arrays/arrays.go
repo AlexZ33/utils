@@ -8,7 +8,6 @@ package arrays
 
 import (
 	"bytes"
-	"errors"
 	"reflect"
 	"sort"
 	"strconv"
@@ -122,22 +121,22 @@ func Map(arr []interface{}, f MapFunc) []interface{} {
 }
 
 // Contains 判断某个元素是否在slice, array, map中
-func Contains(search interface{}, target interface{}) (bool, error) {
+func Contains(search interface{}, target interface{}) bool {
 	targetValue := reflect.ValueOf(target)
 	switch reflect.TypeOf(target).Kind() {
 	case reflect.Slice, reflect.Array:
 		for i := 0; i < targetValue.Len(); i++ {
 			if targetValue.Index(i).Interface() == search {
-				return true, nil
+				return true
 			}
 		}
 	case reflect.Map:
 		if targetValue.MapIndex(reflect.ValueOf(search)).IsValid() {
-			return true, nil
+			return true
 		}
 	}
 
-	return false, errors.New("not in array")
+	return false
 }
 
 // Equal 通过reflect.DeepEqual比较两个slice、struct、map是否相等
